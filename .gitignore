@@ -90,3 +90,5 @@ typings/
 .idea/
 
 front/README.md
+
+api/tmp/db.sqlite3

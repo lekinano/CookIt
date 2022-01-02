@@ -1,56 +1,53 @@
 import { useEffect, useRef, useState } from "react";
 import { ApiErrors, apiFetch } from "../../utils/api";
-import { Button } from "../../ui";
+import { Button, Field } from "../../ui";
 
-export default function CreateIngredient({ toggleNewIngredient }) {
-  const [errors, setErrors] = useState(null);
+export default function CreateIngredient({ onAdd }) {
+  const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
-  const handleSubmit = async (e) => {
-    setLoading(true);
-    setErrors(null);
+  const errorFor = (field) => {
+    const error = errors.find((e) => e.field === field);
+    if (error) {
+      return error.message;
+    }
+    return null;
+  };
+  const handleAdd = async (e) => {
     e.preventDefault();
-    console.log(e.target);
-    console.log(e);
-    const data = new FormData(e.target);
-    console.log(data);
+    const form = e.target;
+    form.querySelector("input").focus();
+    setLoading(true);
     try {
-      const user = await apiFetch("/ingredients/", {
-        method: "POST",
-        body: data,
-      });
-      setLoading(false);
-      toggleNewIngredient();
+      const data = new FormData(form);
+      await onAdd(data);
+      form.reset();
+      setErrors([]);
     } catch (err) {
       if (err instanceof ApiErrors) {
-        setErrors(err.errors[0].message);
+        setErrors(err.errors);
       } else {
-        console.log(err);
+        throw err;
       }
     }
+
+    setLoading(false);
   };
 
   return (
     <form
       className="flex flex-col p-3 items-center m-w-full"
-      onSubmit={handleSubmit}
+      onSubmit={handleAdd}
     >
-      <div>
-        <label
-          htmlFor="title"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Name
-        </label>
-        <div className="mt-1">
-          <input
-            type="text"
-            name="title"
-            id="title"
-            className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-            placeholder="Saucisson"
-          />
-        </div>
-      </div>
+      <Field
+        type="text"
+        name="title"
+        id="title"
+        defaultValue=""
+        placeholder={"Banana"}
+        error={errorFor("title")}
+      >
+        Name
+      </Field>
       <div>
         <div>
           <label
@@ -63,7 +60,7 @@ export default function CreateIngredient({ toggleNewIngredient }) {
             id="unit"
             name="unit"
             className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-            defaultValue="Canada"
+            defaultValue="grams"
           >
             <option>grams</option>
             <option>liters</option>

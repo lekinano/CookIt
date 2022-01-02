@@ -17,7 +17,7 @@ export async function apiFetch(endpoint, options = {}) {
   const res = await fetch("http://localhost:3333" + endpoint, {
     credentials: "include",
     headers: {
-      Accept: "application/jsons",
+      Accept: "application/json",
     },
     ...options,
   });

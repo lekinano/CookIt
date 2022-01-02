@@ -15,7 +15,7 @@ export default function Button({
     <button className={className} type={htmlType} {...props} disabled={loading}>
       {loading ? (
         <>
-          <Loader /> Loading...
+          <Loader />
         </>
       ) : (
         children

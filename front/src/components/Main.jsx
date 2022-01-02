@@ -5,20 +5,20 @@ import { Ingredients, CreateIngredient } from "./index";
 import { useIngredients } from "../hooks";
 
 export default function Main() {
-  const [newIngredient, setNewIngredient] = useState(false);
-
   const [page, setPage] = useState("ingredients");
   // custom hook
-  const { ingredients, fetchIngredients, deleteIngredient } = useIngredients();
-  const toggleNewIngredient = () => {
-    fetchIngredients();
-    setNewIngredient(!newIngredient);
-  };
+  const {
+    ingredients,
+    updateIngredients,
+    fetchIngredients,
+    deleteIngredient,
+    addIngredient,
+  } = useIngredients();
   useEffect(() => {
     if (page === "ingredients") {
       fetchIngredients();
     }
-  }, [page]);
+  }, [page, fetchIngredients]);
   let content = null;
   if (page === "ingredients") {
     content = (
@@ -26,7 +26,8 @@ export default function Main() {
         <Ingredients
           ingredients={ingredients}
           onDelete={deleteIngredient}
-          toggleNewIngredient={toggleNewIngredient}
+          onUpdate={updateIngredients}
+          onAdd={addIngredient}
         />
       </>
     );
