@@ -18,7 +18,7 @@ function App() {
     return null;
   }
   return user ? (
-    <div>
+    <div className="bg-gray-600">
       <Main />
     </div>
   ) : (

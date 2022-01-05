@@ -1,11 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/solid";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { Ingredients, CreateIngredient } from "./index";
-import { useIngredients } from "../hooks";
+import { Ingredients, CreateIngredient, Recipes } from "./index";
+import { useIngredients, useRecipes } from "../hooks";
 
 export default function Main() {
-  const [page, setPage] = useState("ingredients");
+  const [page, setPage] = useState("recipes");
   // custom hook
   const {
     ingredients,
@@ -14,9 +14,12 @@ export default function Main() {
     deleteIngredient,
     addIngredient,
   } = useIngredients();
+  const { recipes, fetchRecipes, fetchRecipe } = useRecipes();
   useEffect(() => {
     if (page === "ingredients") {
       fetchIngredients();
+    } else if (page === "recipes") {
+      fetchRecipes();
     }
   }, [page, fetchIngredients]);
   let content = null;
@@ -31,6 +34,8 @@ export default function Main() {
         />
       </>
     );
+  } else if (page === "recipes") {
+    content = <Recipes recipes={recipes} onClick={fetchRecipes} />;
   }
   return (
     <>
